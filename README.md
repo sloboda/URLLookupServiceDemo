@@ -50,8 +50,15 @@ Part 2: As a thought exercise, please describe how you would accomplish the foll
    decision.
 4. I assume I can claim the '1' in `GET /urlinfo/1/` as my version number one for
    this web service.
-5. Colon in hostname:port is probably okay. See https://stackoverflow.com/q/2053132/5978252
-   instead of %3A.
+5. Colon in hostname:port instead of `%3A` is probably okay.
+   See https://stackoverflow.com/q/2053132/5978252
+6. REVISION. To avoid building a database of the entire Internet web space
+   (Good, Bad, and Unknown_so_in_evaluation_state), I am revising the scope so
+   that there's two types of URLs:
+   1. `$KNOWN_MALWARE_HOSTNAME_AND_PORT`/`$KNOWN_MALWARE_ORIGINAL_PATH_AND_QUERY_STRING`
+   2. Anything else.
+   As in, if it's not pulled from the database as a match, this service lets it
+   pass. We only track bad URLs and everything else is okay.
 
 ## Tests
 
@@ -59,12 +66,10 @@ What am I testing?
 
 Test for the following:
 
-1. `$KNOWN_SAFE_HOSTNAME_AND_PORT`/`$KNOWN_SAFE_ORIGINAL_PATH_AND_QUERY_STRING` returns SAFE
-2. `$KNOWN_SAFE_HOSTNAME_AND_PORT`/`$KNOWN_MALWARE_ORIGINAL_PATH_AND_QUERY_STRING` returns MALWARE
-3. `$KNOWN_MALWARE_HOSTNAME_AND_PORT`/`$KNOWN_MALWARE_ORIGINAL_PATH_AND_QUERY_STRING` returns MALWARE
-4. `$KNOWN_MALWARE_HOSTNAME_AND_PORT`/`$KNOWN_SAFE_ORIGINAL_PATH_AND_QUERY_STRING` returns MALWARE (see Assumption #2)
-5. `$COMPLETELY_NEW_HOSTNAME_AND_PORT`/`$COMPLETELY_NEW_PATH_AND_QUERY_STRING` returns NOT_SAFE_IN_EVALUATION
-
+1. `$KNOWN_MALWARE_HOSTNAME_AND_PORT`/`$KNOWN_MALWARE_ORIGINAL_PATH_AND_QUERY_STRING` returns MALWARE
+2. Anything else returns 200 OK. I did not find it in my database of malware, so
+   it must be safe. Go ahead. (Note the dangers with this approach!) Verify this
+   with two different non-malware URLs.
 
 ## Set up
 
