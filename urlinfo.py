@@ -1,3 +1,4 @@
+#!flask/bin/python
 """URL lookup service demo"""
 from flask import Flask, jsonify, request
 
@@ -15,7 +16,7 @@ malware_sites_and_paths = {
     'badsite.invalid': [u'badpath.html'],
     'malware.site': [u'nasty.html',
                      u'get/cheat/codes/here/'],
-    'malware.site:80': [u'nasty.html'],
+    'malware.site:80': [u'nasty.html',
                      u'get/cheat/codes/here/'],
     'malware.site:443': [u'secret_to_eternal_youth.html',
                          u'I/do/not/know/a/lot/of/malware/urls/'],
