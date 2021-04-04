@@ -1,4 +1,3 @@
-#!flask/bin/python
 """URL lookup service demo"""
 from flask import Flask, jsonify, request
 
