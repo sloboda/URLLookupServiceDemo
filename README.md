@@ -32,8 +32,8 @@ Part 2: As a thought exercise, please describe how you would accomplish the foll
 
 ## Assumptions
 
-1. The caller wants to know if it is safe to access that URL or not. So, I'm
-   going to use *SAFE* and *MALWARE* as response values.
+1. The caller wants to know if there is malware at that URL or not. So, I'm
+   going to use *MALWARE_AT_THAT_HOST_AND_URL* and *NO_MALWARE_AT_THAT_HOST* as response values.
 2. I'm not sure I can trust a `$KNOWN_SAFE_ORIGINAL_PATH_AND_QUERY_STRING`
    on a `$KNOWN_MALWARE_HOSTNAME_AND_PORT`. Can any path be designated safe from
    malware if the host providing that path has been known to hand out malware?
@@ -42,15 +42,11 @@ Part 2: As a thought exercise, please describe how you would accomplish the foll
    from MALWARE." I assume some other "URL qualification service" exists. When
    my "URL lookup service" encounters `$COMPLETELY_NEW_HOSTNAME_AND_PORT` with
    `$COMPLETELY_NEW_PATH_AND_QUERY_STRING`, the agreed action is my service
-   punts these values and this request to "URL qualification service."
-   Since that URL is not known, it cannot have a response value of SAFE.  A
-   response is needed in a timely manner, however, so my service responds with a
-   *NOT_SAFE_IN_EVALUATION* response value and the client decides whether to
-   push the "Proceed to this site?" button. Or the proxy makes some other
-   decision.
+   defines these values as *NO_MALWARE_AT_THAT_HOST*.  My service does not
+   initiate any sort of qualification to start checking that new URL for malware.
 4. I assume I can claim the '1' in `GET /urlinfo/1/` as my version number one for
    this web service.
-5. Colon in hostname:port instead of `%3A` is probably okay.
+5. Storing a colon in hostname:port as a key instead of `%3A` is probably okay.
    See https://stackoverflow.com/q/2053132/5978252
 6. REVISION. To avoid building a database of the entire Internet web space
    (Good, Bad, and Unknown_so_in_evaluation_state), I am revising the scope so
@@ -66,41 +62,57 @@ What am I testing?
 
 Test for the following:
 
-1. `$KNOWN_MALWARE_HOSTNAME_AND_PORT`/`$KNOWN_MALWARE_ORIGINAL_PATH_AND_QUERY_STRING` returns MALWARE
+1. `$KNOWN_MALWARE_HOSTNAME_AND_PORT`/`$KNOWN_MALWARE_ORIGINAL_PATH_AND_QUERY_STRING` returns
+   *MALWARE_AT_THAT_HOST_AND_URL*.
 2. Anything else returns 200 OK. I did not find it in my database of malware, so
    it must be safe. Go ahead. (Note the dangers with this approach!) Verify this
    with two different non-malware URLs.
 
 ## Set up
 
-Details here on how to set up the web service.
+### Prerequisites
+
+This web service demonstration assumes the following prerequisites are
+installed:
 
 * Python 3
-* virtualenv
-* Flask
-* sqlite3
+* virtualenv (called *venv* in Python 3).
+    * A virtual environment ensures the Python interpreter, libraries and
+    scripts installed into it are isolated from those installed in other
+    virtual environments. This allows staff to work on multiple projects with
+    divergent dependencies.
+* python modules defined in `requirements.txt`
+    * Flask - python web framework
+    * requests - issue requests to the web framework.
 
-Use pylint to check code.
+### Installation
+
+1. Clone this git repository to `URLLookupServiceDemo/`
+2  `cd` to the directory `URLLookupServiceDemo/`
+3. Create a virtual environment
+
 
 For testing:
 
-* pytest
-* curl
-* [Postman](https://www.postman.com/)
+* pylint - provides static code analysis and syntax error checking.
+* pytest - provides automated testing
+* [curl](https://curl.se/)
+* [Postman](https://www.postman.com/) - I have used Postman for REST api testing.
 
 ## How to test
 
 Details here on how to perform all the tests identified above.
 
 Test non-malware URLs:
+```
 curl -i "http://localhost:5000/urlinfo/1/en.wikipedia.org:443/wiki/The_Order_of_the_Stick"
 curl -i "http://localhost:5000/urlinfo/1/www.google.com:443/search?q=kermit+the+frog&tbm=isch"
-
+```
 
 
 # Future Considerations
 
-A non-exclusive list of items to address
+A non-exclusive list of items to address in the future.
 
 1. Logging
     * Log for performance improvements. Log when a request is received, when a
