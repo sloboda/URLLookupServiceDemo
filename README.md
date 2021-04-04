@@ -88,7 +88,7 @@ installed:
 ### Installation
 
 1. Clone this git repository to `URLLookupServiceDemo/`
-2  `cd` to the directory `URLLookupServiceDemo/`
+2. `cd` to the directory `URLLookupServiceDemo/`
 3. Create a virtual environment
 
 
@@ -206,7 +206,9 @@ A non-exclusive list of items to address in the future.
 
 
 
-Part 2: As a thought exercise, please describe how you would accomplish the following:
+# Part 2
+
+As a thought exercise, please describe how you would accomplish the following:
 
 * The size of the URL list could grow infinitely. How might you scale this beyond the memory capacity of the system?
     * sqlite3 database
@@ -229,8 +231,8 @@ Part 2: As a thought exercise, please describe how you would accomplish the foll
 * Does that change anything you've done in the app?
     * Logging is missing and needs to be added
 * What are some considerations for the lifecycle of the app?
-    * The /1/ in the URL is already a version indicator. Rolling out version two
-    involves creating /urlinfo/2/ This allows new clients to use the new version
+    * The `/1/` in the URL is already a version indicator. Rolling out version two
+    involves creating `/urlinfo/2/` This allows new clients to use the new version
     and old clients to continue using version 1.
     * When it comes to decommissioning version 1, my team can announce to our
     customers a decommission deadline. Once logs show absolutely no one has
@@ -239,7 +241,7 @@ Part 2: As a thought exercise, please describe how you would accomplish the foll
     version 2. Alternatively the version 1 could be removed which would cause
     clients to get a hard fail.
 * You need to deploy a new version of this application. What would you do?
-    * The /1/ in the URL is already a version indicator. Rolling out version two
-    involves creating /urlinfo/2/ This allows new clients to use the new version
+    * The `/1/` in the URL is already a version indicator. Rolling out version two
+    involves creating `/urlinfo/2/` This allows new clients to use the new version
     and old clients to continue using version 1.
 
