@@ -1,4 +1,4 @@
-# README Draft response
+# README response
 
 Web Service Demo
 
@@ -33,28 +33,35 @@ Part 2: As a thought exercise, please describe how you would accomplish the foll
 ## Assumptions
 
 1. The caller wants to know if there is malware at that URL or not. So, I'm
-   going to use *MALWARE_AT_THAT_HOST_AND_URL* and *NO_MALWARE_AT_THAT_HOST* as response values.
-2. I'm not sure I can trust a `$KNOWN_SAFE_ORIGINAL_PATH_AND_QUERY_STRING`
-   on a `$KNOWN_MALWARE_HOSTNAME_AND_PORT`. Can any path be designated safe from
-   malware if the host providing that path has been known to hand out malware?
-   I assume no.
-3. Nothing on this exercise says "Use this set of criteria to determine SAFE
+   going to use *MALWARE_AT_THAT_HOST_AND_URL* and *NO_MALWARE_AT_THAT_HOST* as
+   response values. These values are set in the dictionary `response_codes`.
+   They may be tuned in consultation with the HTTP proxy service owners.
+2. Nothing on this exercise says "Use this set of criteria to determine SAFE
    from MALWARE." I assume some other "URL qualification service" exists. When
    my "URL lookup service" encounters `$COMPLETELY_NEW_HOSTNAME_AND_PORT` with
    `$COMPLETELY_NEW_PATH_AND_QUERY_STRING`, the agreed action is my service
    defines these values as *NO_MALWARE_AT_THAT_HOST*.  My service does not
    initiate any sort of qualification to start checking that new URL for malware.
+3. I can prove the requested resource does not match any entry in the database
+   of malware URLs. I cannot prove that the URL is safe from all threats; the
+   URL may still lead to some other threat that my service has not identified:
+   [XSS attacks](https://en.wikipedia.org/wiki/Cross-site_scripting),
+   [CSRF attacks](https://en.wikipedia.org/wiki/Cross-site_request_forgery), a
+   website vulnerable to [SQL injection](https://en.wikipedia.org/wiki/SQL_injection), or something else.
+   So while I can prove the URL is not in the database, I cannot prove the URL
+   is "safe from any threat ever."
 4. I assume I can claim the '1' in `GET /urlinfo/1/` as my version number one for
    this web service.
 5. Storing a colon in hostname:port as a key instead of `%3A` is probably okay.
    See https://stackoverflow.com/q/2053132/5978252
-6. REVISION. To avoid building a database of the entire Internet web space
+6. To avoid building a database of the entire Internet web space
    (Good, Bad, and Unknown_so_in_evaluation_state), I am revising the scope so
    that there's two types of URLs:
    1. `$KNOWN_MALWARE_HOSTNAME_AND_PORT`/`$KNOWN_MALWARE_ORIGINAL_PATH_AND_QUERY_STRING`
    2. Anything else.
-   As in, if it's not pulled from the database as a match, this service lets it
-   pass. We only track bad URLs and everything else is okay.
+   As in: if it's not pulled from the database as a match, this service lets it
+   pass. We only track URLs identified as malware and everything else is okay. I
+   have outlined some of the risks I see with this approach in Assumption (3).
 
 ## Tests
 
@@ -90,7 +97,7 @@ installed:
 1. Clone this git repository to `URLLookupServiceDemo/`
 2. `cd` to the directory `URLLookupServiceDemo/`
 3. Create a virtual environment
-
+4. Install modules from requirements
 
 For testing:
 
@@ -114,6 +121,10 @@ curl -i "http://localhost:5000/urlinfo/1/www.google.com:443/search?q=kermit+the+
 
 A non-exclusive list of items to address in the future.
 
+0. Bugs and Additional Features
+    * Add more testing.
+    * I'm missing a test to force an internal error on the result. I would
+      revise this to either test for the "9999" code, or refactor that code out.
 1. Logging
     * Log for performance improvements. Log when a request is received, when a
       response is set, which parts take the longest time.
@@ -134,8 +145,12 @@ A non-exclusive list of items to address in the future.
       or authentication would be required for a production service.
     * There's no encryption on the content. Set up TLS to prevent packets from
       being read between client and this service.
+    * When deploying to production, arguably the tests and pylint should be
+      removed. These files increase disk usage. Debugging and testing should not
+      be done on a production system.
 3. Monitoring
-    * Runscope or some other sort of API web service monitoring would provide
+    * [Runscope](https://www.runscope.com/)
+      or some other sort of API web service monitoring would provide
       metrics. This would help improve performance and guarantee achievement of
       SLAs. Uptime and performance data would help sales.
     * Runscope would also be able to detect if the performance degraded or
@@ -168,7 +183,13 @@ A non-exclusive list of items to address in the future.
     * There's a performance hit to doing a DNS lookup on a hostname. The time
       spent looking up and storing an IP is going to pay off later in reducing
       the size of the hostname database.
-6. Replace hash table with sqlite3. Replace sqlite3 with redis key-value stores
+    * Tracking IP addresses would help correct the known issue that the service
+      does not check for equivalent URLs. e.g. `bad.com/nasty.html` is distinct
+      in the database from `bad.com:80/nasty.html` right now.
+      Both could be stored under a single IP.
+6. Database improvements
+    * Replace hash table with sqlite3 database.
+    * Replace sqlite3 with redis key-value stores
       when things are very large scale.
 7. Replicate for high volume reads and fewer writes
     * This service is lopsided in that the unnamed service providing new URL
@@ -202,8 +223,13 @@ A non-exclusive list of items to address in the future.
     * If the URL is never checked again once it is designated SAFE or
       KNOWN_MALWARE, how do customers know this database of malware URLs is
       current and correct?
-
-
+10. Performance
+    * This web service maintains two data structures: a table of
+    hostnames_and_ports and a second table of hostnames_and_ports plus
+    original_path_and_query_string. My decision here is to add a performance
+    cost at time of insertion into the database to gain a faster lookup. If the
+    hostname has no entry in the first table, the service can respond faster and
+    never have to look at the second, larger, presumably slower table.
 
 
 # Part 2
@@ -216,14 +242,23 @@ As a thought exercise, please describe how you would accomplish the following:
     * Sharding the database. Split the terms read most often to their own dedicated node.
     * Timestamp the database entries and review/move to cold storage/remove the
       oldest. Do bad URLs stay alive forever? Do they stay bad forever?
-* Assume that the number of requests will exceed the capacity of a single system, describe how might you solve this, and how might this change if you have to distribute this workload to an additional region, such as Europe.
+* Assume that the number of requests will exceed the capacity of a single
+  system, describe how might you solve this, and how might this change if you have
+  to distribute this workload to an additional region, such as Europe.
     * Put the service behind a load balancer
     * Work with a cloud provider for global replication across regions
     * Rework the service for a docker container and use kubernetes to scale response
       to demand.
-* What are some strategies you might use to update the service with new URLs? Updates may be as much as 5 thousand URLs a day with updates arriving every 10 minutes.
+* What are some strategies you might use to update the service with new URLs?
+  Updates may be as much as 5 thousand URLs a day with updates arriving every 10
+  minutes.
     * Scale out the read databases and have them fed from a master which takes writes.
 * You’re woken up at 3am, what are some of the things you’ll look for?
+    * The ticket that covers what woke me up at 03:00. If there is no ticket
+      already created, I create one. If it is worth waking me up, it is worth
+      tracking in our ticketing system.
+    * Scope of the issue. Is everything down? Is one person reporting one part
+      of one aspect is slow? These details go in the ticket.
     * Details from whatever woke me up. This will steer further investigation.
     * Logs produced by urlinfo service
     * Logs produced by the http proxy calling urlinfo service
@@ -236,10 +271,10 @@ As a thought exercise, please describe how you would accomplish the following:
     and old clients to continue using version 1.
     * When it comes to decommissioning version 1, my team can announce to our
     customers a decommission deadline. Once logs show absolutely no one has
-    requested from this version for NNN days past the deadline, we can edit the
-    code to respond with 308 Permanent Redirect to force clients to move to
-    version 2. Alternatively the version 1 could be removed which would cause
-    clients to get a hard fail.
+    requested from this version for some agreed upon limit of days past the
+    deadline, we can edit the code to respond with 308 Permanent Redirect to
+    force clients to move to version 2. Alternatively the version 1 could be
+    removed which would cause clients to get a hard fail.
 * You need to deploy a new version of this application. What would you do?
     * The `/1/` in the URL is already a version indicator. Rolling out version two
     involves creating `/urlinfo/2/` This allows new clients to use the new version
