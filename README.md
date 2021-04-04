@@ -201,7 +201,7 @@ A non-exclusive list of items to address in the future.
       down to numerous replicas the URL lookup service treats as read-only. I
       know LDAP services support this kind of "optimized for massive reads"
       configuration. I believe redis does, but I'd want to confirm.
-8. Sharding
+8. [Sharding](https://en.wikipedia.org/wiki/Shard_%28database_architecture%29)
     * With this demo, all values are stored in one database.
     * Some hostnames (google.com) will be requested more than others. Monitoring
       will demonstrate which 10% of hostnames make up 90% of the requests.
@@ -210,6 +210,8 @@ A non-exclusive list of items to address in the future.
       service queries for the most often with the most reads,
       they get their own dedicated shard. Logging and monitoring will tell us
       which hosts these are.
+    * Logging and evaluation will allow us to estimate if the overhead required
+      for this is worth the effort.
 9. Many additional questions about the "URL qualification service" that fills
    the databases used by my "URL lookup service"
     * How long does it take for a new URL to be designated as KNOWN_MALWARE?
