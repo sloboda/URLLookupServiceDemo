@@ -79,6 +79,10 @@ Test for the following:
 
 ### Prerequisites
 
+This web service "URLLookupServiceDemo" was developed on a
+[Ubuntu](https://en.wikipedia.org/wiki/Ubuntu)
+20.04 LTS system and tested on a second Ubuntu 20.04 LTS system.
+
 This web service demonstration assumes the following prerequisites are
 installed:
 
@@ -97,25 +101,34 @@ installed:
 1. Clone this git repository to `URLLookupServiceDemo/`
 2. `cd` to the directory `URLLookupServiceDemo/`
 3. Create a virtual environment
-4. Install modules from requirements
+    virtualenv URLLookupServiceDemo
+4. Install modules as specified in file `requirements.txt`
+    URLLookupServiceDemo/bin/pip3 install -U -r requirements.txt
+
 
 For testing:
 
-* pylint - provides static code analysis and syntax error checking.
-* pytest - provides automated testing
-* [curl](https://curl.se/)
-* [Postman](https://www.postman.com/) - I have used Postman for REST api testing.
+* [pylint](https://pypi.org/project/pylint/) - provides static code analysis and syntax error checking.
+* [pytest](https://docs.pytest.org/en/stable/) - provides automated testing
+* [curl](https://curl.se/) - request URLs at the command line. And more!
+* [Postman](https://www.postman.com/) - I have used Postman for REST api
+  testing. Use of Postman is not covered in this document.
 
 ## How to test
 
-Details here on how to perform all the tests identified above.
+### Static analysis with pylint
 
-Test non-malware URLs:
-```
-curl -i "http://localhost:5000/urlinfo/1/en.wikipedia.org:443/wiki/The_Order_of_the_Stick"
-curl -i "http://localhost:5000/urlinfo/1/www.google.com:443/search?q=kermit+the+frog&tbm=isch"
-```
+See Examples below
 
+### Testing with pytest
+
+See Examples below
+
+### Testing with curl
+
+I also tested from the command line with [curl](https://curl.se/)
+
+See Examples below
 
 # Future Considerations
 
@@ -282,3 +295,155 @@ As a thought exercise, please describe how you would accomplish the following:
     involves creating `/urlinfo/2/` This allows new clients to use the new version
     and old clients to continue using version 1.
 
+# Examples
+
+Setting up the first virtual environment.
+```
+david@mal:~/projects$ cd URLLookupServiceDemo/
+david@mal:~/projects/URLLookupServiceDemo$ virtualenv URLLookupServiceDemo
+created virtual environment CPython3.8.5.final.0-64 in 161ms
+  creator CPython3Posix(dest=/home/david/projects/URLLookupServiceDemo/URLLookupServiceDemo, clear=False, global=False)
+  seeder FromAppData(download=False, pkg_resources=latest, wheel=latest, urllib3=latest, distlib=latest, colorama=latest, msgpack=latest, pep517=latest, html5lib=latest, contextlib2=latest, packaging=latest, pytoml=latest, appdirs=latest, lockfile=latest, setuptools=latest, progress=latest, ipaddr=latest, chardet=latest, pyparsing=latest, retrying=latest, six=latest, requests=latest, CacheControl=latest, pip=latest, webencodings=latest, distro=latest, certifi=latest, idna=latest, via=copy, app_data_dir=/home/david/.local/share/virtualenv/seed-app-data/v1.0.1.debian)
+  activators BashActivator,CShellActivator,FishActivator,PowerShellActivator,PythonActivator,XonshActivator
+david@mal:~/projects/URLLookupServiceDemo$ URLLookupServiceDemo/bin/pip3 install -U -r  requirements.txt
+Collecting Flask
+  Using cached Flask-1.1.2-py2.py3-none-any.whl (94 kB)
+Collecting pylint
+  Using cached pylint-2.7.4-py3-none-any.whl (346 kB)
+Collecting pytest
+  Using cached pytest-6.2.3-py3-none-any.whl (280 kB)
+Collecting requests
+  Downloading requests-2.25.1-py2.py3-none-any.whl (61 kB)
+     |████████████████████████████████| 61 kB 665 kB/s
+Collecting itsdangerous>=0.24
+  Using cached itsdangerous-1.1.0-py2.py3-none-any.whl (16 kB)
+Collecting click>=5.1
+  Using cached click-7.1.2-py2.py3-none-any.whl (82 kB)
+Collecting Jinja2>=2.10.1
+  Using cached Jinja2-2.11.3-py2.py3-none-any.whl (125 kB)
+Collecting Werkzeug>=0.15
+  Using cached Werkzeug-1.0.1-py2.py3-none-any.whl (298 kB)
+Collecting isort<6,>=4.2.5
+  Using cached isort-5.8.0-py3-none-any.whl (103 kB)
+Collecting mccabe<0.7,>=0.6
+  Using cached mccabe-0.6.1-py2.py3-none-any.whl (8.6 kB)
+Collecting toml>=0.7.1
+  Using cached toml-0.10.2-py2.py3-none-any.whl (16 kB)
+Collecting astroid<2.7,>=2.5.2
+  Using cached astroid-2.5.2-py3-none-any.whl (222 kB)
+Requirement already satisfied, skipping upgrade: packaging in ./URLLookupServiceDemo/lib/python3.8/site-packages (from pytest->-r requirements.txt (line 3)) (20.3)
+Collecting iniconfig
+  Using cached iniconfig-1.1.1-py2.py3-none-any.whl (5.0 kB)
+Collecting pluggy<1.0.0a1,>=0.12
+  Using cached pluggy-0.13.1-py2.py3-none-any.whl (18 kB)
+Collecting attrs>=19.2.0
+  Using cached attrs-20.3.0-py2.py3-none-any.whl (49 kB)
+Collecting py>=1.8.2
+  Using cached py-1.10.0-py2.py3-none-any.whl (97 kB)
+Requirement already satisfied, skipping upgrade: urllib3<1.27,>=1.21.1 in ./URLLookupServiceDemo/lib/python3.8/site-packages (from requests->-r requirements.txt (line 4)) (1.25.8)
+Requirement already satisfied, skipping upgrade: chardet<5,>=3.0.2 in ./URLLookupServiceDemo/lib/python3.8/site-packages (from requests->-r requirements.txt (line 4)) (3.0.4)
+Requirement already satisfied, skipping upgrade: idna<3,>=2.5 in ./URLLookupServiceDemo/lib/python3.8/site-packages (from requests->-r requirements.txt (line 4)) (2.8)
+Requirement already satisfied, skipping upgrade: certifi>=2017.4.17 in ./URLLookupServiceDemo/lib/python3.8/site-packages (from requests->-r requirements.txt (line 4)) (2019.11.28)
+Collecting MarkupSafe>=0.23
+  Using cached MarkupSafe-1.1.1-cp38-cp38-manylinux2010_x86_64.whl (32 kB)
+Collecting lazy-object-proxy>=1.4.0
+  Using cached lazy_object_proxy-1.6.0-cp38-cp38-manylinux1_x86_64.whl (58 kB)
+Processing /home/david/.cache/pip/wheels/5f/fd/9e/b6cf5890494cb8ef0b5eaff72e5d55a70fb56316007d6dfe73/wrapt-1.12.1-py3-none-any.whl
+Installing collected packages: itsdangerous, click, MarkupSafe, Jinja2, Werkzeug, Flask, isort, mccabe, toml, lazy-object-proxy, wrapt, astroid, pylint, iniconfig, pluggy, attrs, py, pytest, requests
+  Attempting uninstall: requests
+    Found existing installation: requests 2.22.0
+    Uninstalling requests-2.22.0:
+      Successfully uninstalled requests-2.22.0
+Successfully installed Flask-1.1.2 Jinja2-2.11.3 MarkupSafe-1.1.1 Werkzeug-1.0.1 astroid-2.5.2 attrs-20.3.0 click-7.1.2 iniconfig-1.1.1 isort-5.8.0 itsdangerous-1.1.0 lazy-object-proxy-1.6.0 mccabe-0.6.1 pluggy-0.13.1 py-1.10.0 pylint-2.7.4 pytest-6.2.3 requests-2.25.1 toml-0.10.2 wrapt-1.12.1
+david@mal:~/projects/URLLookupServiceDemo$
+```
+
+
+
+Running pylint
+```
+david@mal:~/projects/URLLookupServiceDemo$ URLLookupServiceDemo/bin/pylint ./urlinfo.py
+
+--------------------------------------------------------------------
+Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)
+
+david@mal:~/projects/URLLookupServiceDemo$
+```
+
+
+Starting the service:
+```
+david@mal:~/projects/URLLookupServiceDemo$ URLLookupServiceDemo/bin/python3 ./urlinfo.py
+ * Serving Flask app "urlinfo" (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: on
+ * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 110-425-814
+
+```
+
+Running pytest
+
+1. In one terminal, start the service as described in *Starting the service*
+2. In a second terminal, start the same virtualenv with the same modules and run the tests:
+
+```
+david@mal:~$ cd projects/URLLookupServiceDemo/
+david@mal:~/projects/URLLookupServiceDemo$ source URLLookupServiceDemo/bin/activate
+(URLLookupServiceDemo) david@mal:~/projects/URLLookupServiceDemo$ URLLookupServiceDemo/bin/pytest tests/all_tests.py
+========================================================== test session starts ==========================================================
+platform linux -- Python 3.8.5, pytest-6.2.3, py-1.10.0, pluggy-0.13.1
+rootdir: /home/david/projects/URLLookupServiceDemo
+collected 5 items
+
+tests/all_tests.py .....                                                                                                          [100%]
+
+=========================================================== 5 passed in 0.08s ===========================================================
+(URLLookupServiceDemo) david@mal:~/projects/URLLookupServiceDemo$ URLLookupServiceDemo/bin/pytest -v tests/all_tests.py
+========================================================== test session starts ==========================================================
+platform linux -- Python 3.8.5, pytest-6.2.3, py-1.10.0, pluggy-0.13.1 -- /home/david/projects/URLLookupServiceDemo/URLLookupServiceDemo/bin/python
+cachedir: .pytest_cache
+rootdir: /home/david/projects/URLLookupServiceDemo
+collected 5 items
+
+tests/all_tests.py::test_get_response_code_200 PASSED                                                                             [ 20%]
+tests/all_tests.py::test_get_response_code_404 PASSED                                                                             [ 40%]
+tests/all_tests.py::test_get_response_in_json_format PASSED                                                                       [ 60%]
+tests/all_tests.py::test_get_response_body_element_code_on_malware PASSED                                                         [ 80%]
+tests/all_tests.py::test_get_response_body_element_code_on_nonmalware PASSED                                                      [100%]
+
+=========================================================== 5 passed in 0.08s ===========================================================
+(URLLookupServiceDemo) david@mal:~/projects/URLLookupServiceDemo$
+
+```
+
+
+curl
+
+The python virtualenv is not required, so I deactivated it before calling curl.
+
+This example shows using curl to make a request to the service and look at the
+response. In the example, the "hostname_and_port" is `en.wikipedia.org:443/` and
+the "original_path_and_query_string" is `wiki/The_Order_of_the_Stick`
+```
+(URLLookupServiceDemo) david@mal:~/projects/URLLookupServiceDemo$ deactivate
+david@mal:~/projects/URLLookupServiceDemo$ curl -i "http://localhost:5000/urlinfo/1/en.wikipedia.org:443/wiki/The_Order_of_the_Stick"
+HTTP/1.0 200 OK
+Content-Type: application/json
+Content-Length: 173
+Server: Werkzeug/1.0.1 Python/3.8.5
+Date: Sun, 04 Apr 2021 22:55:27 GMT
+
+{
+  "urlinfo_response": {
+    "code": "2000",
+    "code_text": "NO_MALWARE_AT_THAT_HOST",
+    "url_investigated": "en.wikipedia.org:443/wiki/The_Order_of_the_Stick"
+  }
+}
+david@mal:~/projects/URLLookupServiceDemo$
+```
