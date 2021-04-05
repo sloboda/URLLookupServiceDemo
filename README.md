@@ -82,9 +82,9 @@ Test for the following:
 
 ### Prerequisites
 
-This web service "URLLookupServiceDemo" was developed on a
+This web service "URLLookupServiceDemo" was developed and tested on a
 [Ubuntu](https://en.wikipedia.org/wiki/Ubuntu)
-20.04 LTS system and tested on a second Ubuntu 20.04 LTS system.
+20.04 LTS system. It was also tested on an Apple Mac running MacOS Catalina 10.15.7.
 
 This web service demonstration assumes the following prerequisites are
 installed:
@@ -163,6 +163,13 @@ A non-exclusive list of items to address in the future.
     * Flask can be configured to run on different IP address and port.
       `localhost:5000` is what I have configured for testing and demonstration
       purposes only.
+    * As noted below, in production I would have to set up a production
+      [WSGI](https://en.wikipedia.org/wiki/Web_Server_Gateway_Interface)
+      server:
+```
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+```
 1. Logging
     * Logging has to be added for multiple reasons.
     * Log for performance improvements. Log when a request is received, when a
