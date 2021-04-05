@@ -104,10 +104,22 @@ installed:
 1. Clone this git repository to `URLLookupServiceDemo/`
 2. `cd` to the directory `URLLookupServiceDemo/`
 3. Create a virtual environment
-    virtualenv URLLookupServiceDemo
+    `$ virtualenv URLLookupServiceDemo`
 4. Install modules as specified in file `requirements.txt`
-    URLLookupServiceDemo/bin/pip3 install -U -r requirements.txt
+    `$ URLLookupServiceDemo/bin/pip3 install -U -r requirements.txt`
 
+### How to start the service
+
+From the directory, with the virtual environment started,
+call `$YOUR_VIRTUAL_ENV/bin/python3 ./urlinfo.py`
+
+See Examples below.
+
+In the examples below, my virtual environment is named 
+`URLLookupServiceDemo` and I start the service as follows:
+```
+URLLookupServiceDemo/bin/python3 ./urlinfo.py
+```
 
 For testing:
 
