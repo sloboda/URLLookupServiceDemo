@@ -42,13 +42,16 @@ Part 2: As a thought exercise, please describe how you would accomplish the foll
    `$COMPLETELY_NEW_PATH_AND_QUERY_STRING`, the agreed action is my service
    defines these values as *NO_MALWARE_AT_THAT_HOST*.  My service does not
    initiate any sort of qualification to start checking that new URL for malware.
+   I created test URLs (malware and non-malware) to prove this service would
+   work. All of them are examples. Identifying malware is beyond the scope of
+   this exercise.
 3. I can prove the requested resource does not match any entry in the database
    of malware URLs. I cannot prove that the URL is safe from all threats; the
    URL may still lead to some other threat that my service has not identified:
    [XSS attacks](https://en.wikipedia.org/wiki/Cross-site_scripting),
    [CSRF attacks](https://en.wikipedia.org/wiki/Cross-site_request_forgery), a
    website vulnerable to [SQL injection](https://en.wikipedia.org/wiki/SQL_injection), or something else.
-   So while I can prove the URL is not in the database, I cannot prove the URL
+   So while I can prove a malware URL is not in the database, I cannot prove the URL
    is "safe from any threat ever."
 4. I assume I can claim the '1' in `GET /urlinfo/1/` as my version number one for
    this web service.
@@ -138,7 +141,11 @@ A non-exclusive list of items to address in the future.
     * Add more testing.
     * I'm missing a test to force an internal error on the result. I would
       revise this to either test for the "9999" code, or refactor that code out.
+    * Flask can be configured to run on different IP address and port.
+      `localhost:5000` is what I have configured for testing and demonstration
+      purposes only.
 1. Logging
+    * Logging has to be added for multiple reasons.
     * Log for performance improvements. Log when a request is received, when a
       response is set, which parts take the longest time.
     * Log for caching. Are some hostnames requested more often (google.com) and
@@ -395,30 +402,33 @@ Running pytest
 david@mal:~$ cd projects/URLLookupServiceDemo/
 david@mal:~/projects/URLLookupServiceDemo$ source URLLookupServiceDemo/bin/activate
 (URLLookupServiceDemo) david@mal:~/projects/URLLookupServiceDemo$ URLLookupServiceDemo/bin/pytest tests/all_tests.py
-========================================================== test session starts ==========================================================
+============================================================ test session starts =============================================================
 platform linux -- Python 3.8.5, pytest-6.2.3, py-1.10.0, pluggy-0.13.1
 rootdir: /home/david/projects/URLLookupServiceDemo
-collected 5 items
+collected 9 items
 
-tests/all_tests.py .....                                                                                                          [100%]
+tests/all_tests.py .........                                                                                                           [100%]
 
-=========================================================== 5 passed in 0.08s ===========================================================
-(URLLookupServiceDemo) david@mal:~/projects/URLLookupServiceDemo$ URLLookupServiceDemo/bin/pytest -v tests/all_tests.py
-========================================================== test session starts ==========================================================
+============================================================= 9 passed in 0.10s ==============================================================
+(URLLookupServiceDemo) david@mal:~/projects/URLLookupServiceDemo$ URLLookupServiceDemo/bin/pytest -v  tests/all_tests.py
+============================================================ test session starts =============================================================
 platform linux -- Python 3.8.5, pytest-6.2.3, py-1.10.0, pluggy-0.13.1 -- /home/david/projects/URLLookupServiceDemo/URLLookupServiceDemo/bin/python
 cachedir: .pytest_cache
 rootdir: /home/david/projects/URLLookupServiceDemo
-collected 5 items
+collected 9 items
 
-tests/all_tests.py::test_get_response_code_200 PASSED                                                                             [ 20%]
-tests/all_tests.py::test_get_response_code_404 PASSED                                                                             [ 40%]
-tests/all_tests.py::test_get_response_in_json_format PASSED                                                                       [ 60%]
-tests/all_tests.py::test_get_response_body_element_code_on_malware PASSED                                                         [ 80%]
-tests/all_tests.py::test_get_response_body_element_code_on_nonmalware PASSED                                                      [100%]
+tests/all_tests.py::test_get_response_code_200 PASSED                                                                                  [ 11%]
+tests/all_tests.py::test_get_response_code_404 PASSED                                                                                  [ 22%]
+tests/all_tests.py::test_get_response_in_json_format PASSED                                                                            [ 33%]
+tests/all_tests.py::test_get_response_body_element_code_on_malware PASSED                                                              [ 44%]
+tests/all_tests.py::test_get_response_body_element_code_on_nonmalware PASSED                                                           [ 55%]
+tests/all_tests.py::test_get_response_body_element_code_on_malware_with_querystring PASSED                                             [ 66%]
+tests/all_tests.py::test_get_response_body_element_code_on_nonmalware_with_querystring PASSED                                          [ 77%]
+tests/all_tests.py::test_get_code_on_malware_with_hostname_and_port_and_file PASSED                                                    [ 88%]
+tests/all_tests.py::test_get_code_on_malware_with_hostname_and_port_and_path_with_separators PASSED                                    [100%]
 
-=========================================================== 5 passed in 0.08s ===========================================================
+============================================================= 9 passed in 0.10s ==============================================================
 (URLLookupServiceDemo) david@mal:~/projects/URLLookupServiceDemo$
-
 ```
 
 
