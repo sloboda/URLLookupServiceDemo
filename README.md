@@ -127,15 +127,16 @@ In the examples below, my virtual environment is named
 URLLookupServiceDemo/bin/python3 ./urlinfo.py
 ```
 
-For testing:
+
+## How to test
+
+Multiple test tools make for well-tested code. For testing:
 
 * [pylint](https://pypi.org/project/pylint/) - provides static code analysis and syntax error checking.
 * [pytest](https://docs.pytest.org/en/stable/) - provides automated testing
 * [curl](https://curl.se/) - request URLs at the command line. And more!
 * [Postman](https://www.postman.com/) - I have used Postman for REST api
   testing. Use of Postman is not covered in this document.
-
-## How to test
 
 ### Static analysis with pylint
 
