@@ -97,6 +97,8 @@ installed:
     divergent dependencies.
 * python modules defined in `requirements.txt`
     * Flask - python web framework
+    * pylint - for static code analysis
+    * pytest - for testing
     * requests - issue requests to the web framework.
 
 ### Installation
@@ -104,9 +106,13 @@ installed:
 1. Clone this git repository to `URLLookupServiceDemo/`
 2. `cd` to the directory `URLLookupServiceDemo/`
 3. Create a virtual environment
+
     `$ virtualenv URLLookupServiceDemo`
+
 4. Install modules as specified in file `requirements.txt`
+
     `$ URLLookupServiceDemo/bin/pip3 install -U -r requirements.txt`
+
 
 ### How to start the service
 
@@ -115,7 +121,7 @@ call `$YOUR_VIRTUAL_ENV/bin/python3 ./urlinfo.py`
 
 See Examples below.
 
-In the examples below, my virtual environment is named 
+In the examples below, my virtual environment is named
 `URLLookupServiceDemo` and I start the service as follows:
 ```
 URLLookupServiceDemo/bin/python3 ./urlinfo.py
